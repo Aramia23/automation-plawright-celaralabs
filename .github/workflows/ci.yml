@@ -9,26 +9,15 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
 
+    services:
+      web:
+        image: automaticbytes/demo-app:latest
+        ports:
+          - 3100:3100
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Pull and start demo-app
-        run: |
-          docker pull automaticbytes/demo-app:latest
-          docker run -d --name demo-app -p 3100:3100 automaticbytes/demo-app
-
-      - name: Wait for demo-app TCP port
-        run: |
-          echo "⏳ Waiting for localhost:3100 to open…"
-          for i in {1..30}; do
-            if nc -z localhost 3100; then
-              echo "✅ localhost:3100 is accepting connections"
-              break
-            fi
-            echo "…still waiting ($i/30)"
-            sleep 2
-          done
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -40,13 +29,14 @@ jobs:
           npm install
           npx playwright install --with-deps
 
+      - name: Wait for demo-app
+        run: |
+          npm install -g wait-on
+          echo "⏳ Waiting for http://localhost:3100/login to respond..."
+          wait-on http://localhost:3100/login
+
       - name: Run Playwright tests
         env:
           BASE_URL: 'http://localhost:3100'
         run: npx playwright test
 
-      - name: Tear down demo-app
-        if: always()
-        run: |
-          docker stop demo-app
-          docker rm demo-app
