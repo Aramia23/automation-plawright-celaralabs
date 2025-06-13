@@ -18,17 +18,15 @@ jobs:
           docker pull automaticbytes/demo-app:latest
           docker run -d --name demo-app -p 3100:3100 automaticbytes/demo-app
 
-      - name: Wait for demo-app /login to respond
+      - name: Wait for demo-app TCP port
         run: |
-          echo "⏳ Waiting for http://localhost:3100/login …"
+          echo "⏳ Waiting for localhost:3100 to open…"
           for i in {1..30}; do
-            # curl’s exit code won’t abort the script; on failure we emit 000
-            status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3100/login || echo "000")
-            if [ "$status" != "000" ]; then
-              echo "✅ /login responded with HTTP $status"
+            if nc -z localhost 3100; then
+              echo "✅ localhost:3100 is accepting connections"
               break
             fi
-            echo "…still waiting ($i/30) (status=$status)"
+            echo "…still waiting ($i/30)"
             sleep 2
           done
 
