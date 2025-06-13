@@ -1,5 +1,4 @@
 import { defineConfig, devices } from "@playwright/test";
-console.log('▶️  Playwright baseURL is:', process.env.BASE_URL || 'http://localhost:3100');
 
 /**
  * Read environment variables from file.
