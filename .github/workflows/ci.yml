@@ -18,23 +18,26 @@ jobs:
           docker pull automaticbytes/demo-app:latest
           docker run -d --name demo-app -p 3100:3100 automaticbytes/demo-app
 
-      - name: Wait for demo-app to be ready
+      - name: Wait for demo-app /login to respond
         run: |
-          echo "⏳ Waiting for http://localhost:3100 to respond..."
+          echo "⏳ Waiting for http://localhost:3100/login …"
           for i in {1..30}; do
-            if curl --silent --fail http://localhost:3100; then
-              echo "✅ demo-app is up!"
+            status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3100/login)
+            if [ "$status" != "000" ]; then
+              echo "✅ /login responded with HTTP $status"
               break
             fi
-            echo "…still waiting ($i/30)"
+            echo "…still waiting ($i/30) (status=$status)"
             sleep 2
           done
 
-      - name: Setup Node.js & install tests
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: |
+
+      - name: Install dependencies & Playwright browsers
+        run: |
           npm install
           npx playwright install --with-deps
 
@@ -48,4 +51,3 @@ jobs:
         run: |
           docker stop demo-app
           docker rm demo-app
-
