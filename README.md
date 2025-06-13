@@ -6,7 +6,6 @@
 
 - **Git**: to clone this repository
 - **Docker & Docker Compose**: to run the web app and tests in isolated containers
-- **Node.js** (>=16) & **npm**: for local development (optional if using Docker)
 
 ## 🔧 Setup
 
