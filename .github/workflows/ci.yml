@@ -29,7 +29,20 @@ jobs:
           npm install
           npx playwright install --with-deps
 
+      - name: Wait for demo-app to be available
+        run: |
+          echo "⏳ Waiting for http://localhost:3100/login ..."
+          for i in $(seq 1 30); do
+            if curl --silent --fail http://localhost:3100/login; then
+              echo "✅ demo-app is up!"
+              break
+            fi
+            echo "…still waiting ($i/30)"
+            sleep 2
+          done
+
       - name: Run Playwright tests
         env:
           BASE_URL: 'http://localhost:3100'
         run: npx playwright test
+
