@@ -22,7 +22,8 @@ jobs:
         run: |
           echo "⏳ Waiting for http://localhost:3100/login …"
           for i in {1..30}; do
-            status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3100/login)
+            # curl’s exit code won’t abort the script; on failure we emit 000
+            status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3100/login || echo "000")
             if [ "$status" != "000" ]; then
               echo "✅ /login responded with HTTP $status"
               break
