@@ -64,18 +64,24 @@ docker-compose up --build
 ### 3. Manual Docker Run
 
 ```bash
-# 1) Launch web app container
+# (Optional) Remove any existing containers to avoid name conflicts
+docker rm -f demo-app || true
+
+docker rm -f automation-playwright-celaralabs || true
+
+# 1) Build your test image (if not already built)
+docker build -t automation-playwright-celaralabs .
+
+# 2) Launch web app container
 docker run -d --name demo-app -p 3100:3100 automaticbytes/demo-app
 
-# 2) Run tests
-docker run --rm \
+# 3) Run tests container
+docker run --rm --name automation-playwright-celaralabs \
   --link demo-app:web \
   -e BASE_URL="http://web:3100" \
-  -v $PWD:/usr/src/app \
-  -w /usr/src/app \
-  playwright-suite
+  automation-playwright-celaralabs
 
-# 3) View report
+# 4) View report
 npx playwright show-report playwright-report
 ```
 
