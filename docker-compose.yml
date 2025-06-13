@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  web:
+    image: automaticbytes/demo-app
+    container_name: demo-app1
+    ports:
+      - "3100:3100"
+
+  tests:
+    build: .
+    container_name: playwright-tests
+    depends_on:
+      - web
+    environment:
+      # Aquí indicamos a Playwright que use este host
+      BASE_URL: "http://web:3100"
+    # Montamos el código para poder iterar sin rebuild constante
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    command: npm test
