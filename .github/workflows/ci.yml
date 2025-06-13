@@ -1,0 +1,31 @@
+name: CI Workflow
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Node and Install Dependencies
+        run: |
+          npm install
+          npx playwright install-deps
+          npx playwright install
+
+      - name: Integration Tests
+        run: npm run test
+
+      - name: Upload Report
+        uses: actions/upload-artifact@master
+        with:
+          name: combined-artifacts
+          path: |
+            playwright-report
+          retention-days: 30

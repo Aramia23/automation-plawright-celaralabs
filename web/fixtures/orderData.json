@@ -1,0 +1,17 @@
+{
+    "billingAddress": {
+      "fullName": "Ana Sofia",
+      "email": "aramia.23@gmail.com",
+      "address": "Nicaragua 555",
+      "city": "Capital Federal",
+      "state": "Buenos Aires",
+      "zip": "5555"
+    },
+    "payment": {
+      "nameOnCard": "Aimara",
+      "creditCardNumber": "4111111111111111",
+      "expMonth": "February",
+      "expYear": "2030",
+      "cvv": "123"
+    }
+  }
